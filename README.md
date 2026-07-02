@@ -1,5 +1,7 @@
 # AudioNovel: Web Novel to Audiobook Engine
 
+> **Note:** This is Version 1 of the application. More features and updates will be coming later!
+
 AudioNovel is a modern, full-stack application that transforms any web novel chapter into a seamless, continuous audiobook. Built with React and Node.js, it bypasses anti-bot protections to scrape chapter text, synthesizes it into high-quality streaming audio using Google TTS, and automatically queues up the next chapter for an uninterrupted listening experience.
 
 ## ✨ Features
