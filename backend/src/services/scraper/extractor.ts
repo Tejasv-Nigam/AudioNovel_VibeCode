@@ -1,5 +1,9 @@
 import { Page } from 'puppeteer';
 import { puppeteerService } from './puppeteer.service';
+import dns from 'dns';
+import { promisify } from 'util';
+
+const lookup = promisify(dns.lookup);
 
 export interface ExtractedChapter {
   title: string;
@@ -8,15 +12,61 @@ export interface ExtractedChapter {
   originalUrl: string;
 }
 
+const isPrivateIP = (ip: string) => {
+  const parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  
+  if (parts[0] === '10' || parts[0] === '127' || parts[0] === '0') return true;
+  if (parts[0] === '192' && parts[1] === '168') return true;
+  if (parts[0] === '172') {
+    const second = parseInt(parts[1], 10);
+    if (second >= 16 && second <= 31) return true;
+  }
+  return false;
+};
+
+const validateUrlSecurity = async (urlStr: string): Promise<boolean> => {
+  try {
+    const parsed = new URL(urlStr);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false;
+    }
+    
+    const { address } = await lookup(parsed.hostname);
+    if (isPrivateIP(address)) {
+      return false;
+    }
+    
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
 export class ExtractorService {
   async extractChapter(url: string): Promise<ExtractedChapter> {
+    if (!(await validateUrlSecurity(url))) {
+      throw new Error('Invalid or unsupported URL. Only public HTTP/HTTPS URLs are allowed.');
+    }
+
     const page = await puppeteerService.getPage();
 
     try {
       // Block images, stylesheets, and fonts to speed up loading
       await page.setRequestInterception(true);
-      page.on('request', (req) => {
+      page.on('request', async (req) => {
+        const reqUrl = req.url();
         const resourceType = req.resourceType();
+
+        // SSRF protection for redirects/navigations
+        if (req.isNavigationRequest()) {
+          const isSafe = await validateUrlSecurity(reqUrl);
+          if (!isSafe) {
+            req.abort('accessdenied');
+            return;
+          }
+        }
+
         if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
           req.abort();
         } else {
