@@ -13,17 +13,15 @@ const Settings: React.FC = () => {
 
       <div className="glass-panel" style={{ maxWidth: '600px' }}>
         <div className="mb-8" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label className="stat-label">Playback Speed</label>
+          <label className="stat-label">Voice Selection</label>
           <select 
             className="input-text"
-            value={settings.playbackSpeed} 
-            onChange={(e) => updateSettings({ playbackSpeed: parseFloat(e.target.value) })}
+            value={settings.voice} 
+            onChange={(e) => updateSettings({ voice: e.target.value })}
           >
-            <option value={0.75}>0.75x</option>
-            <option value={1.0}>1.0x (Normal)</option>
-            <option value={1.25}>1.25x</option>
-            <option value={1.5}>1.5x</option>
-            <option value={2.0}>2.0x</option>
+            <option value="male">Male (en-GB)</option>
+            <option value="female">Female (en-US)</option>
+            <option value="default">Default</option>
           </select>
         </div>
 

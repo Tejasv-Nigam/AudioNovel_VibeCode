@@ -201,6 +201,111 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--bg-surface-hover); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
+/* Text Highlighting */
+.highlight-active {
+  background-color: rgba(99, 102, 241, 0.3); /* var(--accent-primary) with opacity */
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  transition: all 0.3s ease;
+}
+
+/* Playlist Drawer & Player Container */
+.player-container {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.player-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+.playlist-drawer {
+  width: 320px;
+  flex-shrink: 0;
+  transform: translateX(120%);
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+
+.playlist-drawer.open {
+  transform: translateX(0);
+  position: relative; /* Take up space when open */
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.playlist-item {
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid transparent;
+}
+
+.playlist-item:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.playlist-item.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.speed-select {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.speed-select:focus {
+  border-color: var(--accent-primary);
+}
+
 /* Player CSS */
 .spinner { animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }

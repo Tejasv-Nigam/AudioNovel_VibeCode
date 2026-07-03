@@ -1,6 +1,6 @@
 # AudioNovel: Web Novel to Audiobook Engine
 
-> **Note:** This is Version 1 of the application. More features and updates will be coming later!
+> **Note:** This is Version 1.1 of the application. More features and updates will be coming later!
 
 AudioNovel is a modern, full-stack application that transforms any web novel chapter into a seamless, continuous audiobook. Built with React and Node.js, it bypasses anti-bot protections to scrape chapter text, synthesizes it into high-quality streaming audio using Google TTS, and automatically queues up the next chapter for an uninterrupted listening experience.
 
@@ -8,9 +8,11 @@ AudioNovel is a modern, full-stack application that transforms any web novel cha
 
 - **Continuous Listening**: Automatically fetches and plays the "Next Chapter" when the current audio finishes.
 - **Smart Extraction Engine**: Powered by Puppeteer and Stealth plugins to bypass Cloudflare and cleanly extract core story text without ads or sidebars.
-- **Premium User Interface**: A responsive, dark-mode native Glassmorphism design built purely with Vanilla CSS.
-- **Persistent State**: Automatically saves your reading history, bookmarks, and listening statistics to your browser's local storage.
+- **Premium User Interface**: A responsive, dark-mode native Glassmorphism design built purely with Vanilla CSS. Atomic React components ensure high performance.
+- **Persistent State**: Automatically saves your reading history, bookmarks, listening statistics, and **precise playback sessions** to your browser's local storage.
 - **Playback Controls**: Adjust playback speed, skip forward/backward 10 seconds, and toggle continuous auto-play mode.
+- **Keyboard Shortcuts**: Control playback globally with your keyboard (Space, Arrows, M).
+- **Gapless Streaming Architecture**: Uses Ping-Pong dual audio buffers to seamlessly play chunked Text-to-Speech audio without interruptions.
 
 ## 🛠️ Tech Stack
 

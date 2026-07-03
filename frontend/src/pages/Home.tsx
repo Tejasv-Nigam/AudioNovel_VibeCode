@@ -5,14 +5,24 @@ import { useAppContext } from '../context/AppContext';
 
 const Home: React.FC = () => {
   const [url, setUrl] = useState('');
-  const { stats, history, addToHistory } = useAppContext();
+  const [urlError, setUrlError] = useState('');
+  const { stats, history, addToHistory, playbackSession } = useAppContext();
 
   const navigate = useNavigate();
 
   const handleStartReading = () => {
-    if (url) {
+    if (!url) return;
+    try {
+      const parsedUrl = new URL(url);
+      if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+        setUrlError('Only HTTP and HTTPS URLs are supported.');
+        return;
+      }
+      setUrlError('');
       addToHistory(url);
       navigate(`/player?url=${encodeURIComponent(url)}`);
+    } catch (e) {
+      setUrlError('Please enter a valid URL.');
     }
   };
 
@@ -31,14 +41,31 @@ const Home: React.FC = () => {
             className="input-text" 
             placeholder="Paste web novel chapter URL here..." 
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={(e) => { setUrl(e.target.value); setUrlError(''); }}
           />
           <button className="btn-primary" onClick={handleStartReading}>
             <Play fill="currentColor" size={20} />
             Start Reading
           </button>
         </div>
+        {urlError && <div style={{ color: '#ef4444', marginTop: '8px', fontSize: '0.9rem' }}>{urlError}</div>}
       </div>
+
+      {playbackSession && (
+        <div className="glass-panel mb-12" style={{ borderColor: 'var(--accent-primary)', background: 'rgba(217, 70, 239, 0.05)' }}>
+          <h2 style={{ marginBottom: '16px', color: 'var(--accent-primary)' }}>Resume Playing</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ fontSize: '1.2rem', fontWeight: 600 }}>{playbackSession.chapterTitle}</p>
+              <p className="text-muted">{Math.floor(playbackSession.progressPercent)}% completed</p>
+            </div>
+            <button className="btn-primary" onClick={() => navigate(`/player?url=${encodeURIComponent(playbackSession.chapterUrl)}`)}>
+              <Play fill="currentColor" size={20} />
+              Resume
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid-stats mb-12">
         <div className="glass-panel stat-card">
@@ -60,8 +87,9 @@ const Home: React.FC = () => {
           <h2 style={{ marginBottom: '16px' }}>Continue Reading</h2>
           <div className="nav-links">
             {history.slice(0, 3).map((h, i) => (
-              <a key={i} href="#" className="nav-item" style={{ background: 'var(--bg-surface)' }}>
-                {h}
+              <a key={i} href="#" onClick={(e) => { e.preventDefault(); navigate(`/player?url=${encodeURIComponent(h.url)}`); }} className="nav-item" style={{ background: 'var(--bg-surface)', display: 'flex', justifyContent: 'space-between' }}>
+                <span>{h.title}</span>
+                <span className="text-muted">{Math.floor(h.progressPercent)}%</span>
               </a>
             ))}
           </div>
